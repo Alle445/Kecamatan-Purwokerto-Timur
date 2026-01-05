@@ -4,17 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beranda - Sistem Informasi Peta Wilayah Purwokerto Timur</title>
-
-  <link rel="icon" href="Logo_Banyumas.png" type="image/png">
-    
+    <link rel="icon" href="Logo_Banyumas.png" type="image/png">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
         /* ============================================
@@ -75,8 +71,6 @@
             transition: var(--transition);
         }
         
-        
-
         .brand-icon {
             background: none; /* Hapus background putih */
             border-radius: 0; /* Hapus border-radius lingkaran */
@@ -808,28 +802,26 @@
         }
         
         /* ============================================
-           PETA PREVIEW SECTION
+           PETA PREVIEW SECTION (DENGAN IFRAME)
            ============================================ */
         .map-section {
             padding: 80px 0;
             background-color: white;
         }
         
-        .map-container {
+        .map-container-wrapper {
+            background-color: white;
             border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-top: 30px;
-            transition: var(--transition);
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
         }
         
-        .map-container:hover {
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        }
-        
-        #preview-map {
-            height: 450px;
+        .map-container {
             width: 100%;
+            height: 500px;
+            border: none;
         }
         
         /* ============================================
@@ -1022,6 +1014,10 @@
                 min-width: 180px;
             }
             
+            .map-container {
+                height: 450px;
+            }
+            
             body {
                 padding-top: 85px;
             }
@@ -1069,6 +1065,10 @@
             
             .profile-stat {
                 min-width: 100%;
+            }
+            
+            .map-container {
+                height: 400px;
             }
             
             .nav-link {
@@ -1132,6 +1132,10 @@
                 font-size: 1.8rem;
             }
             
+            .map-container {
+                height: 350px;
+            }
+            
             .footer-logo {
                 font-size: 1.5rem;
             }
@@ -1163,7 +1167,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <!-- Beranda -->
                     <li class="nav-item">
@@ -1174,7 +1178,7 @@
                     
                     <!-- Peta Kecamatan -->
                     <li class="nav-item">
-                        <a class="nav-link" href="../Kec/index.html">
+                        <a class="nav-link " href="../Kec/index.html">
                             <i class="fas fa-map"></i> Peta Kecamatan
                         </a>
                     </li>
@@ -1244,7 +1248,7 @@
                     informasi peta, batas wilayah, dan data terkini dengan mudah.
                 </p>
                 <div class="hero-buttons">
-                    <a href="..Kec/index.html" class="btn-hero">
+                    <a href="#peta" class="btn-hero">
                         <i class="fas fa-map me-2"></i> Lihat Peta Purwokerto Timur
                     </a>
                     <a href="../kelurahan-mersi/index.html" class="btn-hero btn-hero-outline">
@@ -1425,7 +1429,7 @@
                                 <span class="label">RW</span>
                             </div>
                         </div>
-                        <a href="../arcawinangun/index.html" class="kelurahan-btn">
+                        <a href="../kelurahan-arcawinangun/index.html" class="kelurahan-btn">
                             <i class="fas fa-map me-1"></i> Lihat Peta
                         </a>
                     </div>
@@ -1452,7 +1456,7 @@
                                 <span class="label">RW</span>
                             </div>
                         </div>
-                        <a href="../mersi/index.html" class="kelurahan-btn">
+                        <a href="../kelurahan-mersi/index.html" class="kelurahan-btn">
                             <i class="fas fa-map me-1"></i> Lihat Peta
                         </a>
                     </div>
@@ -1479,7 +1483,7 @@
                                 <span class="label">RW</span>
                             </div>
                         </div>
-                        <a href="../purwokerto-wetan/index.html" class="kelurahan-btn">
+                        <a href="../kelurahan-purwokerto-wetan/index.html" class="kelurahan-btn">
                             <i class="fas fa-map me-1"></i> Lihat Peta
                         </a>
                     </div>
@@ -1506,7 +1510,7 @@
                                 <span class="label">RW</span>
                             </div>
                         </div>
-                        <a href="../purwokerto-lor/index.html" class="kelurahan-btn">
+                        <a href="../kelurahan-purwokerto-lor/index.html" class="kelurahan-btn">
                             <i class="fas fa-map me-1"></i> Lihat Peta
                         </a>
                     </div>
@@ -1533,7 +1537,7 @@
                                 <span class="label">RW</span>
                             </div>
                         </div>
-                        <a href="../sokanegara/index.html" class="kelurahan-btn">
+                        <a href="../kelurahan-sokanegara/index.html" class="kelurahan-btn">
                             <i class="fas fa-map me-1"></i> Lihat Peta
                         </a>
                     </div>
@@ -1560,7 +1564,7 @@
                                 <span class="label">RW</span>
                             </div>
                         </div>
-                        <a href="../kranji/index.html" class="kelurahan-btn">
+                        <a href="../kelurahan-kranji/index.html" class="kelurahan-btn">
                             <i class="fas fa-map me-1"></i> Lihat Peta
                         </a>
                     </div>
@@ -1570,23 +1574,21 @@
     </section>
 
     <!-- ============================================
-         PETA PREVIEW
+         PETA PREVIEW (DENGAN IFRAME SAMA SEPERTI HALAMAN KELURAHAN)
          ============================================ -->
-    <section class="map-section">
+    <section class="map-section" id="peta">
         <div class="container-custom">
             <h2 class="section-title animate-on-scroll">Peta Wilayah Purwokerto Timur</h2>
             <p class="text-center mb-5 animate-on-scroll" style="color: var(--gray); font-size: 1.1rem;">
                 Sistem Informasi Geografis Kecamatan Purwokerto Timur untuk akses peta wilayah digital dan interaktif
             </p>
             
-            <div class="map-container animate-on-scroll">
-                <div id="preview-map">
-                    <!-- Peta akan dimuat di sini melalui JavaScript -->
-                </div>
+            <div class="map-container-wrapper animate-on-scroll">
+                <iframe src="../Kecamatan/index.html" class="map-container" title="Peta Kecamatan Purwokerto Timur"></iframe>
             </div>
             
             <div class="text-center mt-4">
-                <a href="kecamatan.html" class="btn-hero animate-on-scroll">
+                <a href="../Kec/index.html" class="btn-hero animate-on-scroll">
                     <i class="fas fa-expand-alt me-2"></i> Buka Peta Lengkap
                 </a>
             </div>
@@ -1659,8 +1661,6 @@
          ============================================ -->
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <script>
         // ============================================
@@ -1749,64 +1749,6 @@
         }
         
         // ============================================
-        // PETA PREVIEW DENGAN LEAFLET
-        // ============================================
-        function initMap() {
-            // Koordinat Purwokerto Timur
-            const centerLat = -7.4245;
-            const centerLng = 109.2467;
-            
-            // Inisialisasi peta
-            const map = L.map('preview-map').setView([centerLat, centerLng], 14);
-            
-            // Tambah base layer (OpenStreetMap)
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 19
-            }).addTo(map);
-            
-            // Tambah marker untuk kantor kecamatan dengan custom icon
-            const kantorIcon = L.divIcon({
-                html: '<i class="fas fa-landmark fa-2x" style="color: #1e3c72;"></i>',
-                className: 'custom-marker',
-                iconSize: [40, 40],
-                iconAnchor: [20, 40]
-            });
-            
-            const kantorKecamatan = L.marker([centerLat, centerLng], { icon: kantorIcon })
-                .addTo(map)
-                .bindPopup('<b>Kantor Kecamatan Purwokerto Timur</b><br>Jl. Jend. Gatot Subroto No. 45');
-            
-            // Tambah polygon contoh untuk kecamatan dengan animasi
-            const polygonCoords = [
-                [-7.430, 109.240],
-                [-7.430, 109.255],
-                [-7.415, 109.255],
-                [-7.415, 109.240]
-            ];
-            
-            const kecamatanPolygon = L.polygon(polygonCoords, {
-                color: '#1e3c72',
-                weight: 2,
-                fillColor: '#1e3c72',
-                fillOpacity: 0.1,
-                dashArray: '10, 10',
-                dashOffset: '0'
-            }).addTo(map)
-            .bindPopup('<b>Kecamatan Purwokerto Timur</b><br>Luas: 8,42 km²<br><a href="kecamatan.html" class="btn btn-sm btn-primary mt-1">Lihat Peta Lengkap</a>');
-            
-            // Animasi dash array untuk efek bergerak
-            let offset = 0;
-            setInterval(() => {
-                offset = (offset + 1) % 20;
-                kecamatanPolygon.setStyle({ dashOffset: offset });
-            }, 100);
-            
-            // Fit bounds ke area kecamatan
-            map.fitBounds(kecamatanPolygon.getBounds());
-        }
-        
-        // ============================================
         // SMOOTH SCROLL UNTUK NAVIGASI INTERNAL
         // ============================================
         function initSmoothScroll() {
@@ -1884,6 +1826,26 @@
         }
         
         // ============================================
+        // FUNGSI UNTUK MENYESUAIKAN TINGGI IFRAME
+        // ============================================
+        function adjustIframeHeight() {
+            const iframe = document.querySelector('.map-container');
+            if (iframe) {
+                // Atur tinggi iframe berdasarkan lebar layar
+                const width = window.innerWidth;
+                if (width >= 992) {
+                    iframe.style.height = '500px';
+                } else if (width >= 768) {
+                    iframe.style.height = '450px';
+                } else if (width >= 576) {
+                    iframe.style.height = '400px';
+                } else {
+                    iframe.style.height = '350px';
+                }
+            }
+        }
+        
+        // ============================================
         // INISIALISASI SEMUA FUNGSI SAAT DOKUMEN LOAD
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
@@ -1892,14 +1854,15 @@
             // Inisialisasi semua fungsi
             initNavbarScroll();
             initBackgroundSlideshow();
-            initMap();
             initSmoothScroll();
             initCardAnimations();
+            adjustIframeHeight();
             
             // Handle scroll animations
             window.addEventListener('scroll', handleScrollAnimations);
             window.addEventListener('load', handleScrollAnimations);
             window.addEventListener('resize', handleScrollAnimations);
+            window.addEventListener('resize', adjustIframeHeight);
             
             // Trigger initial check
             handleScrollAnimations();
@@ -1924,6 +1887,17 @@
                         link.classList.add('active');
                     }
                 });
+            });
+            
+            // Set active menu berdasarkan halaman saat ini
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                if (linkHref === currentPage || (currentPage === '' && linkHref === 'beranda.html')) {
+                    link.classList.add('active');
+                }
             });
         });
     </script>
