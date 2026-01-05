@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentang - Geoportal Purwokerto Barat</title>
+  <meta name="description" content="Tentang WebGIS Purwokerto Barat - Proyek akademik pengembangan geoportal dengan teknologi QGIS, Leaflet, dan OpenStreetMap untuk data spasial">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    /* Variabel CSS */
+    :root {
+        --primary: #1e3c72;
+        --primary-dark: #2a5298;
+        --secondary: #4CAF50;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --gray: #6c757d;
+        --light-blue: #e3f2fd;
+        --transition: all 0.3s ease;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        color: var(--dark);
+        line-height: 1.6;
+        background-color: #ffffff;
+        overflow-x: hidden;
+        padding-top: 90px; /* Untuk mengkompensasi navbar fixed */
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+    }
+    
+    .container-custom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* ============================================
+       NAVBAR
+       ============================================ */
+    .navbar-sig {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        
+
+        .brand-icon {
+            background: none; /* Hapus background putih */
+            border-radius: 0; /* Hapus border-radius lingkaran */
+            padding: 0; /* Hapus padding */
+            margin-right: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px; /* Tinggi tetap untuk logo */
+            width: 60px; /* Lebar tetap untuk logo */
+            overflow: hidden; /* Pastikan logo tidak meluap */
+        }
+
+        .logo-img {
+            height: 100%;
+            width: auto;
+            max-height: 60px;
+            object-fit: contain; /* Pastikan logo tidak terdistorsi */
+            transition: var(--transition);
+            
+        }
+
+        
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .brand-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 1.2;
+            color: white; /* Pastikan warna teks putih */
+        }
+        
+        .brand-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.75;
+            color: rgba(255, 255, 255, 0.9); /* Pastikan warna teks subtitle */
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            margin: 0 5px;
+            padding: 8px 15px !important;
+            border-radius: 6px;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white !important;
+        }
+        
+        .nav-link i {
+            margin-right: 5px;
+        }
+        
+        /* Dropdown khusus untuk kelurahan */
+        .dropdown-menu {
+            background: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 10px 0;
+            animation: dropdownFade 0.3s ease;
+        }
+        
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dropdown-item {
+            padding: 10px 20px;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--light-blue);
+            color: var(--primary);
+            border-left-color: var(--secondary);
+            padding-left: 25px;
+        }
+        
+        .navbar-toggler {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 5px 10px;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 2px rgba(87, 204, 153, 0.5);
+        }
+    
+    /* ============================================
+       STYLING UNTUK HALAMAN TENTANG
+       ============================================ */
+    
+    /* Hero Section dengan judul rata kiri */
+    .hero-section {
+        padding: 60px 0 20px;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 15px;
+        text-align: left;
+        font-weight: 700;
+    }
+    
+    .title-underline {
+        border: none;
+        height: 4px;
+        width: 120px;
+        background-color: var(--secondary);
+        margin: 0 0 20px 0;
+        border-radius: 2px;
+    }
+    
+    /* Judul dengan garis bawah rata kiri */
+    .title-left-2 {
+        font-size: 2.5rem;
+        color: var(--primary);
+        text-align: left;
+        margin-bottom: 40px;
+        position: relative;
+        padding-bottom: 15px;
+        display: inline-block;
+    }
+    
+    .title-left-2:after {
+        content: '';
+        position: absolute;
+        width: 140px;
+        height: 4px;
+        background-color: var(--secondary);
+        bottom: 0;
+        left: 0;
+        border-radius: 2px;
+        animation: underlineExpand 0.8s ease-out forwards;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: white;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-title:after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        background-color: var(--secondary);
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+    
+    /* Developer Section - PERBAIKAN JARAK DAN ANIMASI */
+    .about-avatar-wrapper {
+        position: relative;
+        padding: 20px;
+    }
+    
+    .person {
+        text-align: center;
+        animation: floatAvatar 6s ease-in-out infinite;
+    }
+    
+    .avatar-container {
+        position: relative;
+        width: 220px;
+        height: 220px;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        border: 8px solid rgba(255, 255, 255, 0.9);
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+    
+    .avatar-container:hover {
+        transform: scale(1.05);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .avatar-container:hover .img {
+        transform: scale(1.1);
+    }
+    
+    .avatar-name {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-top: 15px;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 5px;
+    }
+    
+    .avatar-name:after {
+        content: '';
+        position: absolute;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+    
+    .dev-info-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        border-left: 5px solid var(--secondary);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+    
+    .dev-info-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(30, 60, 114, 0.03) 0%, rgba(76, 175, 80, 0.03) 100%);
+        z-index: 0;
+    }
+    
+    .dev-info-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .about-meta {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .about-meta dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 15px 20px;
+    }
+    
+    .about-meta dt {
+        font-weight: 600;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        font-size: 1.1rem;
+    }
+    
+    .about-meta dt:before {
+        content: '✓';
+        color: var(--secondary);
+        font-weight: bold;
+        margin-right: 10px;
+        font-size: 1.2rem;
+    }
+    
+    .about-meta dd {
+        color: var(--dark);
+        margin-bottom: 0;
+        font-size: 1.1rem;
+        padding: 5px 0;
+        border-bottom: 1px dashed rgba(0,0,0,0.1);
+    }
+    
+    /* About Geoportal Card */
+    .geoportal-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 35px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+        border-top: 5px solid var(--primary);
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+    
+    .geoportal-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+    
+    .geoportal-card h3 {
+        color: var(--primary);
+        margin-bottom: 20px;
+        font-size: 1.8rem;
+    }
+    
+    .text-justify {
+        text-align: justify;
+    }
+    
+    /* Info Cards */
+    .direction-box {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        background: white;
+        border-top: 4px solid var(--primary);
+    }
+    
+    .direction-box:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        border-top-color: var(--secondary);
+    }
+    
+    .direction-imgBx {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+    }
+    
+    .direction-imgBx img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .direction-box:hover .direction-imgBx img {
+        transform: scale(1.05);
+    }
+    
+    .direction-content {
+        padding: 25px;
+    }
+    
+    .direction-content h2 {
+        color: var(--primary);
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    
+    .direction-content p {
+        color: #555;
+        line-height: 1.6;
+        margin: 0;
+    }
+    
+    /* Tech Stack Section */
+    .tech-item {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px 15px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: var(--transition);
+        height: 100%;
+        border-top: 3px solid var(--light-blue);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .tech-item:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(30, 60, 114, 0.05) 0%, rgba(76, 175, 80, 0.05) 100%);
+        z-index: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .tech-item:hover:before {
+        opacity: 1;
+    }
+    
+    .tech-item:hover {
+        transform: translateY(-10px) scale(1.03);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        border-top-color: var(--secondary);
+    }
+    
+    .tech-logo {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--light-blue);
+        border-radius: 10px;
+        padding: 15px;
+        transition: transform 0.5s ease, background-color 0.3s ease;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .tech-item:hover .tech-logo {
+        transform: rotateY(180deg);
+        background-color: rgba(76, 175, 80, 0.1);
+    }
+    
+    .tech-logo img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        transition: transform 0.5s ease;
+    }
+    
+    .tech-logo svg {
+        width: 100%;
+        height: 100%;
+    }
+    
+    /* ============================================
+       ANIMASI BARU
+       ============================================ */
+    @keyframes floatAvatar {
+        0% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-15px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+    
+    @keyframes underlineExpand {
+        0% {
+            width: 0;
+            left: 50%;
+        }
+        100% {
+            width: 140px;
+            left: 0;
+        }
+    }
+    
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+        }
+    }
+    
+    .fade-left {
+        animation: fadeInLeft 1s ease forwards;
+    }
+    
+    .fade-right {
+        animation: fadeInRight 1s ease forwards;
+    }
+    
+    .fade-up {
+        animation: fadeInUp 1s ease forwards;
+    }
+    
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+    
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 0.8s ease forwards;
+    }
+    
+    /* Delay animations */
+    .delay-1 {
+        animation-delay: 0.2s;
+    }
+    
+    .delay-2 {
+        animation-delay: 0.4s;
+    }
+    
+    .delay-3 {
+        animation-delay: 0.6s;
+    }
+    
+    /* ============================================
+       FOOTER
+       ============================================ */
+    .footer {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, #1a3166 100%);
+        color: white;
+        padding: 60px 0 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .footer:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+    }
+    
+    .footer-logo-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .footer-logo-img {
+        height: 60px;
+        width: auto;
+        margin-right: 15px;
+        /* filter: brightness(0) invert(1); */
+    }
+    
+    .footer-logo-text {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+    
+    .footer-about {
+        margin-bottom: 30px;
+        font-size: 1rem;
+        opacity: 0.9;
+        line-height: 1.7;
+    }
+    
+    .footer-heading {
+        font-size: 1.2rem;
+        margin-bottom: 25px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    
+    .footer-heading:after {
+        content: '';
+        position: absolute;
+        width: 40px;
+        height: 3px;
+        background-color: var(--secondary);
+        bottom: 0;
+        left: 0;
+        border-radius: 2px;
+    }
+    
+    .footer-links {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .footer-links li {
+        margin-bottom: 12px;
+    }
+    
+    .footer-links a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+    }
+    
+    .footer-links a:hover {
+        color: var(--secondary);
+        padding-left: 5px;
+    }
+    
+    .footer-links i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .footer-contact p {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .footer-contact i {
+        margin-right: 12px;
+        margin-top: 5px;
+        color: var(--secondary);
+    }
+    
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 50px;
+        padding-top: 30px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+    }
+    
+    /* ============================================
+       RESPONSIVE DESIGN
+       ============================================ */
+    @media (max-width: 992px) {
+        .hero-section {
+            padding: 50px 0 15px;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .title-left-2 {
+            font-size: 2rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+        
+        .avatar-container {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .dev-info-card, .geoportal-card {
+            padding: 25px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        body {
+            padding-top: 85px;
+        }
+        
+        .hero-section {
+            padding: 40px 0 10px;
+        }
+        
+        .hero-title {
+            font-size: 1.8rem;
+        }
+        
+        .title-left-2 {
+            font-size: 1.8rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+        }
+        
+        .avatar-container {
+            width: 180px;
+            height: 180px;
+        }
+        
+        .avatar-name {
+            font-size: 1.5rem;
+        }
+        
+        .about-meta dl {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        .direction-imgBx {
+            height: 180px;
+        }
+        
+        .tech-logo {
+            width: 70px;
+            height: 70px;
+        }
+        
+        .navbar-brand {
+            font-size: 1.3rem;
+        }
+        
+        .brand-icon {
+            height: 50px;
+            width: 50px;
+        }
+        
+        .brand-title {
+            font-size: 1rem;
+        }
+        
+        .brand-subtitle {
+            font-size: 0.7rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        body {
+            padding-top: 80px;
+        }
+        
+        .hero-section {
+            padding: 30px 0 10px;
+        }
+        
+        .hero-title {
+            font-size: 1.6rem;
+        }
+        
+        .title-left-2 {
+            font-size: 1.6rem;
+        }
+        
+        .title-underline {
+            width: 80px;
+        }
+        
+        .section-title {
+            font-size: 1.6rem;
+        }
+        
+        .avatar-container {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .dev-info-card, .geoportal-card {
+            padding: 20px;
+        }
+        
+        .direction-content {
+            padding: 20px;
+        }
+        
+        .footer-logo {
+            font-size: 1.5rem;
+        }
+    }
+  </style>
+</head>
+<body>
+    <!-- ============================================
+         NAVBAR BARU (DESAIN DARI CONTOH)
+         ============================================ -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-sig fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="beranda.html">
+                <div class="brand-icon">
+                    <img src="Logo_Banyumas.png" alt="Logo Kabupaten Banyumas" class="logo-img">
+                </div>
+                <div class="brand-text">
+                    <div class="brand-title">SIG PURWOKERTO TIMUR</div>
+                    <small class="brand-subtitle">Sistem Informasi Geografis</small>
+                </div>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Beranda -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="beranda.html">
+                            <i class="fas fa-home"></i> Beranda
+                        </a>
+                    </li>
+                    
+                    <!-- Peta Kecamatan -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="kecamatan.html">
+                            <i class="fas fa-map"></i> Peta Kecamatan
+                        </a>
+                    </li>
+                    
+                    <!-- Dropdown Kelurahan (6 Kelurahan) -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="kelurahanDropdown" 
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-location-dot"></i> Kelurahan
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="kelurahanDropdown">
+                            <li><a class="dropdown-item" href="kelurahan-arcawinangun.html">
+                                Arcawinangun
+                            </a></li>
+                            <li><a class="dropdown-item" href="kelurahan-mersi.html">
+                                Mersi
+                            </a></li>
+                            <li><a class="dropdown-item" href="kelurahan-purwokerto-wetan.html">
+                                Purwokerto Wetan
+                            </a></li>
+                            <li><a class="dropdown-item" href="kelurahan-purwokerto-lor.html">
+                                Purwokerto Lor
+                            </a></li>
+                            <li><a class="dropdown-item" href="kelurahan-sokanegara.html">
+                                Sokanegara
+                            </a></li>
+                            <li><a class="dropdown-item" href="kelurahan-kranji.html">
+                                Kranji
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Tentang -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="tentang.html">
+                            <i class="fas fa-info-circle"></i> Tentang
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================
+         HERO SECTION (DIUBAH UNTUK RATA KIRI)
+         ============================================ -->
+    <section class="hero-section">
+        <div class="container-custom fade-up" data-delay="0ms">
+            <!-- Judul Pengembang dengan garis di bawahnya -->
+            <h1 class="hero-title fade-left">Pengembang</h1>
+            <hr class="title-underline fade-left delay-1">
+        </div>
+    </section>
+
+    <!-- ============================================
+         DEVELOPER SECTION - DIPERBAIKI JARAK & ANIMASI
+         ============================================ -->
+    <section class="container-custom py-4">
+        <div class="row align-items-center g-4 mb-4">
+            <div class="col-lg-5">
+                <div class="about-avatar-wrapper d-flex flex-column align-items-center fade-left">
+                    <div class="person">
+                        <div class="avatar-container pulse">
+                            <div class="container-inner">
+                                <img class="img img1" src="images/foto_pengembang.png" alt="Sigit Setiyoko">
+                            </div>
+                        </div>
+                        <div class="avatar-name">Sigit Setiyoko</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <div class="dev-info-card fade-right delay-1">
+                    <div class="about-meta">
+                        <dl>
+                            <dt>Program Studi</dt>
+                            <dd>Sistem Informasi</dd>
+                            <dt>Institusi</dt>
+                            <dd>Universitas AMIKOM Purwokerto</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         ABOUT GEOPORTAL SECTION
+         ============================================ -->
+    <section class="container-custom pb-5">
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="geoportal-card fade-up delay-2">
+                    <h3 class="mb-3">Geoportal Purwokerto Timur</h3>
+                    <p class="mb-0 text-justify">
+                        Situs ini adalah portal peta interaktif yang menampilkan data spasial Kecamatan Purwokerto Timur dan desa-desa di dalamnya. Portal dikembangkan sebagai bagian dari tugas perkuliahan mata kuliah GIS. Portal dirancang untuk memudahkan akses informasi tata ruang, infrastruktur, dan batas administratif dalam format peta visual.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         INFORMASI GEOPORTAL SECTION (SUDAH DIPERBAIKI)
+         ============================================ -->
+    <section class="container-custom pb-5">
+        <h2 class="title-left-2 fade-left">Informasi Geoportal</h2>
+        <div class="row mb-5 justify-content-center">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="direction-box h-100 fade-up delay-1">
+                    <div class="direction-imgBx">
+                        <img src="images/tujuan.png" alt="Tujuan Geoportal">
+                    </div>
+                    <div class="direction-content">
+                        <div>
+                            <h2>Tujuan</h2>
+                            <p>Portal dibuat untuk menyediakan sumber data spasial terbuka yang berguna bagi warga, pemerintahan lokal, dan peneliti dalam perencanaan dan pengembangan wilayah.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="direction-box h-100 fade-up delay-2">
+                    <div class="direction-imgBx">
+                        <img src="images/fitur-utama.png" alt="Fitur Utama">
+                    </div>
+                    <div class="direction-content">
+                        <div>
+                            <h2>Fitur Utama</h2>
+                            <p>Peta desa hasil ekspor QGIS, layer fasilitas publik, informasi administrasi, dan visualisasi data spasial dalam format interaktif.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="direction-box h-100 fade-up delay-3">
+                    <div class="direction-imgBx">
+                        <img src="images/sumber-data.png" alt="Sumber Data">
+                    </div>
+                    <div class="direction-content">
+                        <div>
+                            <h2>Sumber Data</h2>
+                            <p>Data berasal dari survei lapangan, pengukuran langsung, dan sumber terbuka seperti OpenStreetMap yang terus diperbarui.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         TECH STACK SECTION
+         ============================================ -->
+    <section class="container-custom pb-5">
+        <h2 class="title-left-2 fade-left">Tools yang Digunakan</h2>
+        <br>
+        <div class="row g-3 justify-content-center">
+            <div class="col-md-5 col-lg-3">
+                <div class="tech-item fade-up delay-1">
+                    <div class="tech-logo">
+                        <img src="images/QGIS.png" alt="QGIS">
+                    </div>
+                    <p class="text-center mt-2 fw-bold">QGIS</p>
+                    <p class="text-center text-muted small">Pengolahan & analisis data spasial</p>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-3">
+                <div class="tech-item fade-up delay-2">
+                    <div class="tech-logo">
+                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="50" height="50" rx="8" fill="#F3F4F6"></rect>
+                            <text x="25" y="28" text-anchor="middle" font-size="12" font-weight="bold" fill="#d97706">HTML5</text>
+                        </svg>
+                    </div>
+                    <p class="text-center mt-2 fw-bold">HTML5</p>
+                    <p class="text-center text-muted small">Struktur halaman web</p>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-3">
+                <div class="tech-item fade-up delay-3">
+                    <div class="tech-logo">
+                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="50" height="50" rx="8" fill="#F3F4F6"></rect>
+                            <text x="25" y="28" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">CSS3</text>
+                        </svg>
+                    </div>
+                    <p class="text-center mt-2 fw-bold">CSS3</p>
+                    <p class="text-center text-muted small">Styling & tata letak</p>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-3">
+                <div class="tech-item fade-up delay-1">
+                    <div class="tech-logo">
+                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="50" height="50" rx="8" fill="#F3F4F6"></rect>
+                            <text x="25" y="28" text-anchor="middle" font-size="10" font-weight="bold" fill="#059669">JS</text>
+                        </svg>
+                    </div>
+                    <p class="text-center mt-2 fw-bold">JavaScript</p>
+                    <p class="text-center text-muted small">Interaktivitas & logika</p>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-3">
+                <div class="tech-item fade-up delay-2">
+                    <div class="tech-logo">
+                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="50" height="50" rx="8" fill="#F3F4F6"></rect>
+                            <text x="25" y="28" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">Leaflet</text>
+                        </svg>
+                    </div>
+                    <p class="text-center mt-2 fw-bold">Leaflet</p>
+                    <p class="text-center text-muted small">Library peta interaktif</p>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-3">
+                <div class="tech-item fade-up delay-3">
+                    <div class="tech-logo">
+                     <img src="images/Github.png" alt="Github">
+                    </div>
+                    <p class="text-center mt-2 fw-bold">Github</p>
+                    <p class="text-center text-muted small">Deploy Otomatis</p>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-3">
+                <div class="tech-item fade-up delay-1">
+                    <div class="tech-logo">
+                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="50" height="50" rx="8" fill="#F3F4F6"></rect>
+                            <text x="25" y="28" text-anchor="middle" font-size="11" font-weight="bold" fill="#059669">OSM</text>
+                        </svg>
+                    </div>
+                    <p class="text-center mt-2 fw-bold">OpenStreetMap</p>
+                    <p class="text-center text-muted small">Data spasial terbuka</p>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-3">
+                <div class="tech-item fade-up delay-2">
+                    <div class="tech-logo">
+                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="50" height="50" rx="8" fill="#F3F4F6"></rect>
+                            <text x="25" y="28" text-anchor="middle" font-size="9" font-weight="bold" fill="#0078d4">VS Code</text>
+                        </svg>
+                    </div>
+                    <p class="text-center mt-2 fw-bold">VS Code</p>
+                    <p class="text-center text-muted small">Code editor</p>
+                </div>
+            </div>
+        </div>
+        
+    </section>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer class="footer">
+        <div class="container-custom">
+            <div class="row">
+                <!-- Logo dan Deskripsi -->
+                <div class="col-lg-4 mb-5">
+                    <div class="footer-logo-container">
+                        <img src="Logo_Banyumas.png" alt="Logo Kabupaten Banyumas" class="footer-logo-img">
+                        <div class="footer-logo-text">SIG Purwokerto Timur</div>
+                    </div>
+                    <div class="footer-about">
+                        Sistem Informasi Geografis berbasis web untuk pengelolaan data spasial 
+                        wilayah Kecamatan Purwokerto Timur, Kabupaten Banyumas, Jawa Tengah.
+                    </div>
+                </div>
+                
+                <!-- Menu Navigasi -->
+                <div class="col-lg-4 mb-5">
+                    <h4 class="footer-heading">Menu</h4>
+                    <ul class="footer-links">
+                        <li><a href="beranda.html"><i class="fas fa-chevron-right"></i> Beranda</a></li>
+                        <li><a href="desa.html"><i class="fas fa-chevron-right"></i> Desa</a></li>
+                        <li><a href="kecamatan.html"><i class="fas fa-chevron-right"></i> Kecamatan</a></li>
+                        <li><a href="tentang.html"><i class="fas fa-chevron-right"></i> Tentang</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Kontak -->
+                <div class="col-lg-4 mb-5">
+                    <h4 class="footer-heading">Kontak</h4>
+                    <div class="footer-contact">
+                        <p>
+                            <i class="fas fa-user-graduate"></i>
+                            <span>Developer: Sigit Setiyoko</span>
+                        </p>
+                        <p>
+                            <i class="fas fa-envelope"></i>
+                            <span>Email: sigitsetiyoko9@gmail.com</span>
+                        </p>
+                        <p>
+                            <i class="fas fa-university"></i>
+                            <span>
+                                Universitas AMIKOM Purwokerto<br>
+                                Program Studi Sistem Informasi
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hak Cipta -->
+            <div class="footer-bottom">
+                <p>© 2025 Geoportal Purwokerto Barat. Hak Cipta Dilindungi.</p>
+                <p class="mt-2">Data Sumber: Survei Lapangan & OpenStreetMap</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================
+         JAVASCRIPT
+         ============================================ -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Fungsi untuk animasi scroll reveal
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            const windowHeight = window.innerHeight;
+            
+            function checkReveal() {
+                reveals.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - 100) {
+                        const delay = element.getAttribute('data-delay') || 0;
+                        setTimeout(() => {
+                            element.style.animationDelay = `${delay}ms`;
+                        }, 0);
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', checkReveal);
+            window.addEventListener('load', checkReveal);
+            checkReveal(); // Initial check
+        }
+        
+        // Fungsi untuk animasi fade-in elements
+        function initFadeAnimations() {
+            const fadeElements = document.querySelectorAll('.fade-left, .fade-right, .fade-up');
+            const windowHeight = window.innerHeight;
+            
+            function checkFade() {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - 100) {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translate(0, 0)';
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', checkFade);
+            window.addEventListener('load', checkFade);
+            checkFade(); // Initial check
+        }
+        
+        // Fungsi untuk navbar scroll effect
+        function initNavbarScroll() {
+            const navbar = document.querySelector('.navbar');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        }
+        
+        // Fungsi untuk hover effects
+        function initHoverEffects() {
+            const avatar = document.querySelector('.avatar-container');
+            const devCard = document.querySelector('.dev-info-card');
+            
+            avatar.addEventListener('mouseenter', () => {
+                avatar.style.animation = 'none';
+            });
+            
+            avatar.addEventListener('mouseleave', () => {
+                avatar.style.animation = 'floatAvatar 6s ease-in-out infinite';
+            });
+            
+            devCard.addEventListener('mouseenter', () => {
+                devCard.style.transform = 'translateY(-10px)';
+            });
+            
+            devCard.addEventListener('mouseleave', () => {
+                devCard.style.transform = 'translateY(0)';
+            });
+        }
+        
+        // Inisialisasi semua fungsi saat dokumen siap
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Halaman Tentang - Geoportal Purwokerto Barat');
+            initScrollReveal();
+            initFadeAnimations();
+            initNavbarScroll();
+            initHoverEffects();
+            
+            // Tambahkan kelas animasi setelah halaman dimuat
+            setTimeout(() => {
+                document.querySelector('.hero-title').classList.add('fade-left');
+                document.querySelector('.title-underline').classList.add('fade-left');
+            }, 300);
+        });
+    </script>
+</body>
+</html>
