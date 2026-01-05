@@ -1,1 +1,1931 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - Sistem Informasi Peta Wilayah Purwokerto Timur</title>
 
+  <link rel="icon" href="Logo_Banyumas.png" type="image/png">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        /* ============================================
+           VARIABEL & RESET
+           ============================================ */
+        :root {
+            --primary: #1e3c72;
+            --primary-dark: #2a5298;
+            --secondary: #4CAF50;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --light-blue: #e3f2fd;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: #ffffff;
+            overflow-x: hidden;
+            padding-top: 90px; /* Untuk mengkompensasi navbar fixed */
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+        
+        .container-custom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* ============================================
+           NAVBAR BARU (DESAIN DARI CONTOH)
+           ============================================ */
+        .navbar-sig {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        
+
+        .brand-icon {
+            background: none; /* Hapus background putih */
+            border-radius: 0; /* Hapus border-radius lingkaran */
+            padding: 0; /* Hapus padding */
+            margin-right: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px; /* Tinggi tetap untuk logo */
+            width: 60px; /* Lebar tetap untuk logo */
+            overflow: hidden; /* Pastikan logo tidak meluap */
+        }
+
+        .logo-img {
+            height: 100%;
+            width: auto;
+            max-height: 60px;
+            object-fit: contain; /* Pastikan logo tidak terdistorsi */
+            transition: var(--transition);
+            
+        }
+
+        
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .brand-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            line-height: 1.2;
+            color: white; /* Pastikan warna teks putih */
+        }
+        
+        .brand-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.75;
+            color: rgba(255, 255, 255, 0.9); /* Pastikan warna teks subtitle */
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            margin: 0 5px;
+            padding: 8px 15px !important;
+            border-radius: 6px;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white !important;
+        }
+        
+        .nav-link i {
+            margin-right: 5px;
+        }
+        
+        /* Dropdown khusus untuk kelurahan */
+        .dropdown-menu {
+            background: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 10px 0;
+            animation: dropdownFade 0.3s ease;
+        }
+        
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dropdown-item {
+            padding: 10px 20px;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--light-blue);
+            color: var(--primary);
+            border-left-color: var(--secondary);
+            padding-left: 25px;
+        }
+        
+        .navbar-toggler {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 5px 10px;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 2px rgba(87, 204, 153, 0.5);
+        }
+        
+        /* ============================================
+           HERO SECTION DENGAN BACKGROUND SLIDESHOW
+           ============================================ */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            min-height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+        }
+        
+        /* Container untuk background slideshow */
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+        
+        /* Layer overlay untuk meningkatkan keterbacaan teks */
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(30, 60, 114, 0.9), rgba(42, 82, 152, 0.9));
+            z-index: -1;
+        }
+        
+        /* Slideshow background images */
+        .bg-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            animation: backgroundSlideshow 16s infinite;
+        }
+        
+        /* Gambar background untuk slideshow */
+        .bg-slide:nth-child(1) {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Indonesia_provinces_blank_map.svg/1200px-Indonesia_provinces_blank_map.svg.png');
+            animation-delay: 0s;
+        }
+        
+        .bg-slide:nth-child(2) {
+            background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
+            animation-delay: 4s;
+        }
+        
+        .bg-slide:nth-child(3) {
+            background-image: url('https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
+            animation-delay: 8s;
+        }
+        
+        .bg-slide:nth-child(4) {
+            background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
+            animation-delay: 12s;
+        }
+        
+        /* Animasi slideshow */
+        @keyframes backgroundSlideshow {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(1);
+            }
+            10%, 30% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            40% {
+                opacity: 0;
+                transform: scale(1.1);
+            }
+        }
+        
+        /* Konten hero */
+        .hero-content {
+            padding: 20px;
+            animation: contentFadeIn 1.5s ease-out;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        @keyframes contentFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: titleFadeIn 1s ease-out 0.5s both;
+        }
+        
+        @keyframes titleFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-section h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            animation: subtitleFadeIn 1s ease-out 0.8s both;
+        }
+        
+        @keyframes subtitleFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            color: rgba(255, 255, 255, 0.9);
+            animation: textFadeIn 1s ease-out 1.1s both;
+        }
+        
+        @keyframes textFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Tombol hero */
+        .btn-hero {
+            background-color: var(--secondary);
+            color: white;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 10px 10px;
+            animation: buttonFadeIn 1s ease-out 1.4s both;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-hero:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.7s;
+        }
+        
+        .btn-hero:hover:before {
+            left: 100%;
+        }
+        
+        @keyframes buttonFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .btn-hero:hover {
+            background-color: #3d8b40;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-hero-outline {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-hero-outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        /* ============================================
+           DATA ADMINISTRASI
+           ============================================ */
+        .data-section {
+            padding: 80px 0;
+            background-color: var(--light-blue);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .data-section:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(76, 175, 80, 0.05) 0%, transparent 70%);
+            z-index: 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--primary);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        /* Kartu statistik dengan animasi */
+        .stat-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            height: 100%;
+            border-top: 5px solid var(--primary);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .stat-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+        
+        .stat-card:hover:before {
+            transform: scaleX(1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-icon {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1) rotate(5deg);
+            color: var(--secondary);
+        }
+        
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+            line-height: 1;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover .stat-number {
+            color: var(--secondary);
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--gray);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .stat-unit {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-top: 5px;
+            transition: var(--transition);
+        }
+        
+        /* ============================================
+           PROFIL KECAMATAN
+           ============================================ */
+        .profile-section {
+            padding: 80px 0;
+            background-color: white;
+            position: relative;
+        }
+        
+        .profile-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--secondary);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, transparent 50%, rgba(76, 175, 80, 0.05) 50%);
+            transition: var(--transition);
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .profile-card:hover:before {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-icon {
+            background-color: var(--light-blue);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            transition: var(--transition);
+        }
+        
+        .profile-card:hover .profile-icon {
+            background-color: var(--secondary);
+            transform: rotate(15deg);
+        }
+        
+        .profile-icon i {
+            font-size: 2rem;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .profile-card:hover .profile-icon i {
+            color: white;
+        }
+        
+        .profile-content h3 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .profile-content p {
+            color: var(--gray);
+            margin-bottom: 0;
+        }
+        
+        .profile-text {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .profile-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .profile-stat {
+            display: flex;
+            align-items: center;
+            background-color: var(--light);
+            padding: 15px 20px;
+            border-radius: 8px;
+            min-width: 200px;
+            transition: var(--transition);
+        }
+        
+        .profile-stat:hover {
+            background-color: var(--light-blue);
+            transform: translateX(5px);
+        }
+        
+        .profile-stat i {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-right: 15px;
+            transition: var(--transition);
+        }
+        
+        .profile-stat:hover i {
+            color: var(--secondary);
+            transform: scale(1.2);
+        }
+        
+        /* ============================================
+           DAFTAR KELURAHAN
+           ============================================ */
+        .kelurahan-section {
+            padding: 80px 0;
+            background-color: #f8f9fa;
+            position: relative;
+        }
+        
+        .kelurahan-section:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+        
+        .kelurahan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .kelurahan-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            border-top: 4px solid var(--primary);
+            position: relative;
+        }
+        
+        .kelurahan-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(76, 175, 80, 0.05) 30%);
+            z-index: 0;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .kelurahan-card:hover:before {
+            opacity: 1;
+        }
+        
+        .kelurahan-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+            border-top-color: var(--secondary);
+        }
+        
+        .kelurahan-header {
+            padding: 25px 25px 15px;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .kelurahan-header h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 1.4rem;
+            transition: var(--transition);
+        }
+        
+        .kelurahan-card:hover .kelurahan-header h4 {
+            color: var(--secondary);
+        }
+        
+        .kelurahan-header p {
+            color: var(--gray);
+            margin-bottom: 0;
+            font-size: 0.95rem;
+        }
+        
+        .kelurahan-body {
+            padding: 20px 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .kelurahan-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .kelurahan-info-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .kelurahan-info-item .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+            transition: var(--transition);
+        }
+        
+        .kelurahan-card:hover .kelurahan-info-item .value {
+            color: var(--secondary);
+        }
+        
+        .kelurahan-info-item .label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            display: block;
+        }
+        
+        .kelurahan-btn {
+            display: block;
+            text-align: center;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 15px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kelurahan-btn:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .kelurahan-btn:hover:before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .kelurahan-btn:hover {
+            background-color: var(--primary-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
+        }
+        
+        /* ============================================
+           PETA PREVIEW SECTION
+           ============================================ */
+        .map-section {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .map-container {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            transition: var(--transition);
+        }
+        
+        .map-container:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        #preview-map {
+            height: 450px;
+            width: 100%;
+        }
+        
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #1a3166 100%);
+            color: white;
+            padding: 60px 0 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+        }
+        
+        .footer-logo-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .footer-logo-img {
+        height: 60px;
+        width: auto;
+        margin-right: 15px;
+        /* filter: brightness(0) invert(1); */
+    }
+    
+    .footer-logo-text {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+        
+        .footer-about {
+            margin-bottom: 30px;
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.7;
+        }
+        
+        .footer-heading {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-heading:after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background-color: var(--secondary);
+            bottom: 0;
+            left: 0;
+            border-radius: 2px;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        
+        .footer-links i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .footer-contact p {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .footer-contact i {
+            margin-right: 12px;
+            margin-top: 5px;
+            color: var(--secondary);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 50px;
+            padding-top: 30px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+        
+        /* ============================================
+           ANIMASI SCROLL
+           ============================================ */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* ============================================
+           INDICATOR BACKGROUND SLIDESHOW
+           ============================================ */
+        .slideshow-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 5;
+        }
+        
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .indicator-dot.active {
+            background-color: var(--secondary);
+            transform: scale(1.2);
+        }
+        
+        .indicator-dot:hover {
+            background-color: white;
+        }
+        
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 1200px) {
+            .container-custom {
+                max-width: 960px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .container-custom {
+                max-width: 720px;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-section h2 {
+                font-size: 1.7rem;
+            }
+            
+            .kelurahan-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .profile-stat {
+                min-width: 180px;
+            }
+            
+            body {
+                padding-top: 85px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container-custom {
+                max-width: 540px;
+                padding: 0 15px;
+            }
+            
+            .hero-section {
+                min-height: 600px;
+                height: auto;
+                padding: 100px 0 60px;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .hero-section p {
+                font-size: 1.1rem;
+                padding: 0 15px;
+            }
+            
+            .btn-hero {
+                display: block;
+                margin: 10px auto;
+                width: 90%;
+                max-width: 300px;
+            }
+            
+            .stat-number {
+                font-size: 2.2rem;
+            }
+            
+            .kelurahan-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-stat {
+                min-width: 100%;
+            }
+            
+            .nav-link {
+                padding: 10px 15px !important;
+                margin: 2px 0;
+            }
+            
+            .dropdown-menu {
+                border-radius: 8px;
+                margin-top: 5px;
+            }
+            
+            body {
+                padding-top: 80px;
+            }
+            
+            .brand-icon {
+                padding: 8px;
+                margin-right: 10px;
+            }
+            
+            .brand-icon i {
+                font-size: 1.2rem;
+            }
+            
+            .brand-title {
+                font-size: 1rem;
+            }
+            
+            .brand-subtitle {
+                font-size: 0.7rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-section h2 {
+                font-size: 1.3rem;
+            }
+            
+            .stat-card {
+                padding: 25px 15px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .stat-icon {
+                font-size: 2.2rem;
+            }
+            
+            .profile-card {
+                padding: 25px 20px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .footer-logo {
+                font-size: 1.5rem;
+            }
+            
+            body {
+                padding-top: 75px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ============================================
+         NAVBAR BARU (DESAIN DARI CONTOH)
+         ============================================ -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-sig fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="beranda.html">
+                <div class="brand-icon">
+                    <img src="Logo_Banyumas.png" alt="Logo Kabupaten Banyumas" class="logo-img">
+                </div>
+                <div class="brand-text">
+                    <div class="brand-title">SIG PURWOKERTO TIMUR</div>
+                    <small class="brand-subtitle">Sistem Informasi Geografis</small>
+                </div>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Beranda -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="beranda.html">
+                            <i class="fas fa-home"></i> Beranda
+                        </a>
+                    </li>
+                    
+                    <!-- Peta Kecamatan -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="kecamatan.html">
+                            <i class="fas fa-map"></i> Peta Kecamatan
+                        </a>
+                    </li>
+                    
+                    <!-- Dropdown Kelurahan (6 Kelurahan) -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="kelurahanDropdown" 
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-location-dot"></i> Kelurahan
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="kelurahanDropdown">
+                            <li><a class="dropdown-item" href="kelurahan-arcawinangun.html">
+                                Arcawinangun
+                            </a></li>
+                            <li><a class="dropdown-item" href="kelurahan-mersi.html">
+                                Mersi
+                            </a></li>
+                            <li><a class="dropdown-item" href="kelurahan-purwokerto-wetan.html">
+                                Purwokerto Wetan
+                            </a></li>
+                            <li><a class="dropdown-item" href="kelurahan-purwokerto-lor.html">
+                                Purwokerto Lor
+                            </a></li>
+                            <li><a class="dropdown-item" href="kelurahan-sokanegara.html">
+                                Sokanegara
+                            </a></li>
+                            <li><a class="dropdown-item" href="kelurahan-kranji.html">
+                                Kranji
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Tentang -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="tentang.html">
+                            <i class="fas fa-info-circle"></i> Tentang
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================
+         HERO SECTION DENGAN BACKGROUND SLIDESHOW
+         ============================================ -->
+    <section class="hero-section">
+        <!-- Background Slideshow -->
+        <div class="hero-background">
+            <div class="bg-slide"></div>
+            <div class="bg-slide"></div>
+            <div class="bg-slide"></div>
+            <div class="bg-slide"></div>
+        </div>
+        
+        <!-- Overlay untuk meningkatkan keterbacaan -->
+        <div class="hero-overlay"></div>
+        
+        <!-- Konten Hero -->
+        <div class="container-custom">
+            <div class="hero-content">
+                <h1>Sistem Informasi Peta Wilayah</h1>
+                <h2>Kecamatan Purwokerto Timur</h2>
+                <p>
+                    Platform digital untuk mengakses informasi geografis dan data wilayah di 
+                    Kecamatan Purwokerto Timur, Kabupaten Banyumas, Jawa Tengah. Temukan 
+                    informasi peta, batas wilayah, dan data terkini dengan mudah.
+                </p>
+                <div class="hero-buttons">
+                    <a href="kecamatan.html" class="btn-hero">
+                        <i class="fas fa-map me-2"></i> Lihat Peta Purwokerto Timur
+                    </a>
+                    <a href="kelurahan-mersi.html" class="btn-hero btn-hero-outline">
+                        <i class="fas fa-map-marked-alt me-2"></i> Peta Kelurahan Mersi
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Indicator Slideshow -->
+        <div class="slideshow-indicator">
+            <div class="indicator-dot active" data-slide="0"></div>
+            <div class="indicator-dot" data-slide="1"></div>
+            <div class="indicator-dot" data-slide="2"></div>
+            <div class="indicator-dot" data-slide="3"></div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         DATA ADMINISTRASI
+         ============================================ -->
+    <section class="data-section" id="data">
+        <div class="container-custom">
+            <h2 class="section-title animate-on-scroll">Data Administrasi</h2>
+            <p class="text-center mb-5 animate-on-scroll" style="color: var(--gray); font-size: 1.1rem;">
+                Statistik wilayah terbaru tahun 2025
+            </p>
+            
+            <div class="row">
+                <!-- Populasi -->
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-card animate-on-scroll">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-number">58.451</div>
+                        <div class="stat-label">Populasi</div>
+                        <div class="stat-unit">Jiwa</div>
+                    </div>
+                </div>
+                
+                <!-- Luas Wilayah -->
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-card animate-on-scroll" style="animation-delay: 0.1s">
+                        <div class="stat-icon">
+                            <i class="fas fa-ruler-combined"></i>
+                        </div>
+                        <div class="stat-number">8,42</div>
+                        <div class="stat-label">Luas Wilayah</div>
+                        <div class="stat-unit">km²</div>
+                    </div>
+                </div>
+                
+                <!-- Jumlah Kelurahan -->
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-card animate-on-scroll" style="animation-delay: 0.2s">
+                        <div class="stat-icon">
+                            <i class="fas fa-house-user"></i>
+                        </div>
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Kelurahan</div>
+                        <div class="stat-unit">Wilayah</div>
+                    </div>
+                </div>
+                
+                <!-- Kepadatan Penduduk -->
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-card animate-on-scroll" style="animation-delay: 0.3s">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-area"></i>
+                        </div>
+                        <div class="stat-number">5.876</div>
+                        <div class="stat-label">Kepadatan</div>
+                        <div class="stat-unit">Jiwa/km²</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         PROFIL KECAMATAN
+         ============================================ -->
+    <section class="profile-section" id="tentang">
+        <div class="container-custom">
+            <h2 class="section-title animate-on-scroll">Profil Kecamatan</h2>
+            
+            <div class="profile-card animate-on-scroll">
+                <div class="profile-header">
+                    <div class="profile-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <div class="profile-content">
+                        <h3>Kecamatan Purwokerto Timur</h3>
+                        <p>Kabupaten Banyumas, Jawa Tengah</p>
+                    </div>
+                </div>
+                
+                <div class="profile-text">
+                    <p>
+                        <strong>Purwokerto Timur</strong> adalah salah satu kecamatan di <strong>Kabupaten Banyumas, Jawa Tengah</strong>, 
+                        yang terletak di bagian timur wilayah Purwokerto. Kecamatan ini berbatasan dengan 
+                        <strong>Kecamatan Purwokerto Selatan, Purwokerto Barat, Purwokerto Utara, dan Kecamatan Kedungbanteng</strong>. 
+                        Wilayah ini terdiri dari enam kelurahan: <strong>Arcawinangun, Mersi, Purwokerto Wetan, 
+                        Purwokerto Lor, Sokanegara, dan Kranji</strong>, dengan kantor camat berlokasi di Jl. Jend. Gatot Subroto.
+                    </p>
+                    <p>
+                        Kecamatan ini dikenal dengan dinamika penduduknya yang padat dan memiliki peran penting 
+                        dalam administrasi Kabupaten Banyumas. <strong>Kecamatan Purwokerto Timur</strong> merupakan pusat vital 
+                        bagi kegiatan perekonomian lokal dan memiliki infrastruktur yang berkembang pesat. 
+                        Kecamatan Purwokerto Timur memiliki luas wilayah <strong>8,42 km²</strong> dengan jumlah penduduk 
+                        per <strong>2025</strong> sebanyak <strong>58.451 jiwa</strong>.
+                    </p>
+                </div>
+                
+                <div class="profile-stats">
+                    <!-- Kelurahan -->
+                    <div class="profile-stat animate-on-scroll" style="animation-delay: 0.1s">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <div style="font-weight: 600; color: var(--primary);">6 Kelurahan</div>
+                            <small>Wilayah Administratif</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Rukun Warga -->
+                    <div class="profile-stat animate-on-scroll" style="animation-delay: 0.2s">
+                        <i class="fas fa-route"></i>
+                        <div>
+                            <div style="font-weight: 600; color: var(--primary);">85 Rukun Warga (RW)</div>
+                            <small>Pembagian Wilayah</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Rukun Tetangga -->
+                    <div class="profile-stat animate-on-scroll" style="animation-delay: 0.3s">
+                        <i class="fas fa-users-between-lines"></i>
+                        <div>
+                            <div style="font-weight: 600; color: var(--primary);">420 Rukun Tetangga (RT)</div>
+                            <small>Unit Terkecil</small>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         DAFTAR KELURAHAN
+         ============================================ -->
+    <section class="kelurahan-section" id="kelurahan">
+        <div class="container-custom">
+            <h2 class="section-title animate-on-scroll">Daftar Kelurahan</h2>
+            <p class="text-center mb-5 animate-on-scroll" style="color: var(--gray); font-size: 1.1rem;">
+                6 Kelurahan di wilayah Kecamatan Purwokerto Timur
+            </p>
+            
+            <div class="kelurahan-grid">
+                <!-- Kelurahan 1: Arcawinangun -->
+                <div class="kelurahan-card animate-on-scroll">
+                    <div class="kelurahan-header">
+                        <h4>Arcawinangun</h4>
+                        <p>Kelurahan di Purwokerto Timur</p>
+                    </div>
+                    <div class="kelurahan-body">
+                        <div class="kelurahan-info">
+                            <div class="kelurahan-info-item">
+                                <span class="value">13107</span>
+                                <span class="label">Penduduk</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">152,40</span>
+                                <span class="label">ha</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">12</span>
+                                <span class="label">RW</span>
+                            </div>
+                        </div>
+                        <a href="arcawinangun.html" class="kelurahan-btn">
+                            <i class="fas fa-map me-1"></i> Lihat Peta
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Kelurahan 2: Mersi -->
+                <div class="kelurahan-card animate-on-scroll" style="animation-delay: 0.1s">
+                    <div class="kelurahan-header">
+                        <h4>Mersi</h4>
+                        <p>Kelurahan di Purwokerto Timur</p>
+                    </div>
+                    <div class="kelurahan-body">
+                        <div class="kelurahan-info">
+                            <div class="kelurahan-info-item">
+                                <span class="value">7754</span>
+                                <span class="label">Penduduk</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">129,06</span>
+                                <span class="label">ha</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">7</span>
+                                <span class="label">RW</span>
+                            </div>
+                        </div>
+                        <a href="mersi.html" class="kelurahan-btn">
+                            <i class="fas fa-map me-1"></i> Lihat Peta
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Kelurahan 3: Purwokerto Wetan -->
+                <div class="kelurahan-card animate-on-scroll" style="animation-delay: 0.2s">
+                    <div class="kelurahan-header">
+                        <h4>Purwokerto Wetan</h4>
+                        <p>Kelurahan di Purwokerto Timur</p>
+                    </div>
+                    <div class="kelurahan-body">
+                        <div class="kelurahan-info">
+                            <div class="kelurahan-info-item">
+                                <span class="value">8.472</span>
+                                <span class="label">Penduduk</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">107,00</span>
+                                <span class="label">ha</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">10</span>
+                                <span class="label">RW</span>
+                            </div>
+                        </div>
+                        <a href="purwokerto-wetan.html" class="kelurahan-btn">
+                            <i class="fas fa-map me-1"></i> Lihat Peta
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Kelurahan 4: Purwokerto Lor -->
+                <div class="kelurahan-card animate-on-scroll" style="animation-delay: 0.3s">
+                    <div class="kelurahan-header">
+                        <h4>Purwokerto Lor</h4>
+                        <p>Kelurahan di Purwokerto Timur</p>
+                    </div>
+                    <div class="kelurahan-body">
+                        <div class="kelurahan-info">
+                            <div class="kelurahan-info-item">
+                                <span class="value">11239</span>
+                                <span class="label">Penduduk</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">150,00</span>
+                                <span class="label">ha</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">9</span>
+                                <span class="label">RW</span>
+                            </div>
+                        </div>
+                        <a href="purwokerto-lor.html" class="kelurahan-btn">
+                            <i class="fas fa-map me-1"></i> Lihat Peta
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Kelurahan 5: Sokanegara -->
+                <div class="kelurahan-card animate-on-scroll" style="animation-delay: 0.4s">
+                    <div class="kelurahan-header">
+                        <h4>Sokanegara</h4>
+                        <p>Kelurahan di Purwokerto Timur</p>
+                    </div>
+                    <div class="kelurahan-body">
+                        <div class="kelurahan-info">
+                            <div class="kelurahan-info-item">
+                                <span class="value">8005</span>
+                                <span class="label">Penduduk</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">116,60</span>
+                                <span class="label">ha</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">12</span>
+                                <span class="label">RW</span>
+                            </div>
+                        </div>
+                        <a href="sokanegara.html" class="kelurahan-btn">
+                            <i class="fas fa-map me-1"></i> Lihat Peta
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Kelurahan 6: Kranji -->
+                <div class="kelurahan-card animate-on-scroll" style="animation-delay: 0.5s">
+                    <div class="kelurahan-header">
+                        <h4>Kranji</h4>
+                        <p>Kelurahan di Purwokerto Timur</p>
+                    </div>
+                    <div class="kelurahan-body">
+                        <div class="kelurahan-info">
+                            <div class="kelurahan-info-item">
+                                <span class="value">10263</span>
+                                <span class="label">Penduduk</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">179,10</span>
+                                <span class="label">ha</span>
+                            </div>
+                            <div class="kelurahan-info-item">
+                                <span class="value">8</span>
+                                <span class="label">RW</span>
+                            </div>
+                        </div>
+                        <a href="kranji.html" class="kelurahan-btn">
+                            <i class="fas fa-map me-1"></i> Lihat Peta
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         PETA PREVIEW
+         ============================================ -->
+    <section class="map-section">
+        <div class="container-custom">
+            <h2 class="section-title animate-on-scroll">Peta Wilayah Purwokerto Timur</h2>
+            <p class="text-center mb-5 animate-on-scroll" style="color: var(--gray); font-size: 1.1rem;">
+                Sistem Informasi Geografis Kecamatan Purwokerto Timur untuk akses peta wilayah digital dan interaktif
+            </p>
+            
+            <div class="map-container animate-on-scroll">
+                <div id="preview-map">
+                    <!-- Peta akan dimuat di sini melalui JavaScript -->
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="kecamatan.html" class="btn-hero animate-on-scroll">
+                    <i class="fas fa-expand-alt me-2"></i> Buka Peta Lengkap
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer class="footer">
+        <div class="container-custom">
+            <div class="row">
+                <!-- Logo dan Deskripsi -->
+                <div class="col-lg-4 mb-5">
+                    <div class="footer-logo-container">
+                        <img src="Logo_Banyumas.png" alt="Logo Kabupaten Banyumas" class="footer-logo-img">
+                        <div class="footer-logo-text">SIG Purwokerto Timur</div>
+                    </div>
+                    <div class="footer-about">
+                        Sistem Informasi Geografis berbasis web untuk pengelolaan data spasial 
+                        wilayah Kecamatan Purwokerto Timur, Kabupaten Banyumas, Jawa Tengah.
+                    </div>
+                </div>
+                
+                <!-- Menu Navigasi -->
+                <div class="col-lg-4 mb-5">
+                    <h4 class="footer-heading">Menu</h4>
+                    <ul class="footer-links">
+                        <li><a href="beranda.html"><i class="fas fa-chevron-right"></i> Beranda</a></li>
+                        <li><a href="kecamatan.html"><i class="fas fa-chevron-right"></i> Peta Kecamatan</a></li>
+                        <li><a href="#kelurahan"><i class="fas fa-chevron-right"></i> Daftar Kelurahan</a></li>
+                        <li><a href="#tentang"><i class="fas fa-chevron-right"></i> Profil Kecamatan</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Kontak -->
+                <div class="col-lg-4 mb-5">
+                    <h4 class="footer-heading">Kontak</h4>
+                    <div class="footer-contact">
+                        <p>
+                            <i class="fas fa-envelope"></i>
+                            <span>Email: kecamatanpwttimur@gmail.com</span>
+                        </p>
+                        <p>
+                            <i class="fas fa-phone"></i>
+                            <span>Telepon: (0281) 636094</span>
+                        </p>
+                        <p>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>
+                                Kantor Kecamatan Purwokerto Timur<br>
+                                JI. Dr. Soeparno No. 28 Purwokerto,<br>
+                                Kabupaten Banyumas, Jawa Tengah
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hak Cipta -->
+            <div class="footer-bottom">
+                <p>© 2025 Sistem Informasi Geografis Purwokerto Timur. Hak Cipta Dilindungi.</p>
+                <p class="mt-2">Data Sumber: Bappeda Kabupaten Banyumas & OpenStreetMap</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================
+         JAVASCRIPT
+         ============================================ -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // ============================================
+        // INISIALISASI GLOBAL DAN UTILITY FUNCTIONS
+        // ============================================
+        
+        // Fungsi untuk check jika element ada di viewport
+        function isInViewport(element) {
+            const rect = element.getBoundingClientRect();
+            return (
+                rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.8 &&
+                rect.bottom >= 0
+            );
+        }
+        
+        // Fungsi untuk handle scroll animations
+        function handleScrollAnimations() {
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            elements.forEach(element => {
+                if (isInViewport(element) && !element.classList.contains('animated')) {
+                    element.classList.add('animated');
+                }
+            });
+        }
+        
+        // ============================================
+        // NAVBAR SCROLL EFFECT
+        // ============================================
+        function initNavbarScroll() {
+            const navbar = document.querySelector('.navbar');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        }
+        
+        // ============================================
+        // BACKGROUND SLIDESHOW HERO SECTION
+        // ============================================
+        function initBackgroundSlideshow() {
+            const slides = document.querySelectorAll('.bg-slide');
+            const indicators = document.querySelectorAll('.indicator-dot');
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+            
+            // Fungsi untuk mengubah slide
+            function changeSlide(slideIndex) {
+                // Reset semua slides
+                slides.forEach(slide => {
+                    slide.style.opacity = '0';
+                    slide.style.animation = 'none';
+                });
+                
+                // Reset semua indicators
+                indicators.forEach(indicator => {
+                    indicator.classList.remove('active');
+                });
+                
+                // Set slide aktif
+                slides[slideIndex].style.opacity = '1';
+                slides[slideIndex].style.animation = 'backgroundSlideshow 16s infinite';
+                
+                // Set indicator aktif
+                indicators[slideIndex].classList.add('active');
+                currentSlide = slideIndex;
+            }
+            
+            // Event listener untuk indicators
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    changeSlide(index);
+                });
+            });
+            
+            // Auto slideshow setiap 4 detik
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                changeSlide(currentSlide);
+            }, 4000);
+            
+            // Inisialisasi slide pertama
+            changeSlide(0);
+        }
+        
+        // ============================================
+        // PETA PREVIEW DENGAN LEAFLET
+        // ============================================
+        function initMap() {
+            // Koordinat Purwokerto Timur
+            const centerLat = -7.4245;
+            const centerLng = 109.2467;
+            
+            // Inisialisasi peta
+            const map = L.map('preview-map').setView([centerLat, centerLng], 14);
+            
+            // Tambah base layer (OpenStreetMap)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+            
+            // Tambah marker untuk kantor kecamatan dengan custom icon
+            const kantorIcon = L.divIcon({
+                html: '<i class="fas fa-landmark fa-2x" style="color: #1e3c72;"></i>',
+                className: 'custom-marker',
+                iconSize: [40, 40],
+                iconAnchor: [20, 40]
+            });
+            
+            const kantorKecamatan = L.marker([centerLat, centerLng], { icon: kantorIcon })
+                .addTo(map)
+                .bindPopup('<b>Kantor Kecamatan Purwokerto Timur</b><br>Jl. Jend. Gatot Subroto No. 45');
+            
+            // Tambah polygon contoh untuk kecamatan dengan animasi
+            const polygonCoords = [
+                [-7.430, 109.240],
+                [-7.430, 109.255],
+                [-7.415, 109.255],
+                [-7.415, 109.240]
+            ];
+            
+            const kecamatanPolygon = L.polygon(polygonCoords, {
+                color: '#1e3c72',
+                weight: 2,
+                fillColor: '#1e3c72',
+                fillOpacity: 0.1,
+                dashArray: '10, 10',
+                dashOffset: '0'
+            }).addTo(map)
+            .bindPopup('<b>Kecamatan Purwokerto Timur</b><br>Luas: 8,42 km²<br><a href="kecamatan.html" class="btn btn-sm btn-primary mt-1">Lihat Peta Lengkap</a>');
+            
+            // Animasi dash array untuk efek bergerak
+            let offset = 0;
+            setInterval(() => {
+                offset = (offset + 1) % 20;
+                kecamatanPolygon.setStyle({ dashOffset: offset });
+            }, 100);
+            
+            // Fit bounds ke area kecamatan
+            map.fitBounds(kecamatanPolygon.getBounds());
+        }
+        
+        // ============================================
+        // SMOOTH SCROLL UNTUK NAVIGASI INTERNAL
+        // ============================================
+        function initSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        // Tutup navbar mobile jika terbuka
+                        const navbarToggler = document.querySelector('.navbar-toggler');
+                        const navbarCollapse = document.querySelector('.navbar-collapse');
+                        if (navbarCollapse.classList.contains('show')) {
+                            navbarToggler.click();
+                        }
+                        
+                        // Smooth scroll ke element
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+        
+        // ============================================
+        // ANIMASI KARTU STATISTIK DAN KELURAHAN
+        // ============================================
+        function initCardAnimations() {
+            // Stat cards animation on scroll
+            const statCards = document.querySelectorAll('.stat-card');
+            const observerOptions = {
+                threshold: 0.2,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            statCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+            
+            // Kelurahan cards animation
+            const kelurahanCards = document.querySelectorAll('.kelurahan-card');
+            kelurahanCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                const cardObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                cardObserver.observe(card);
+            });
+        }
+        
+        // ============================================
+        // INISIALISASI SEMUA FUNGSI SAAT DOKUMEN LOAD
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('SIG Purwokerto Timur - Beranda dimuat');
+            
+            // Inisialisasi semua fungsi
+            initNavbarScroll();
+            initBackgroundSlideshow();
+            initMap();
+            initSmoothScroll();
+            initCardAnimations();
+            
+            // Handle scroll animations
+            window.addEventListener('scroll', handleScrollAnimations);
+            window.addEventListener('load', handleScrollAnimations);
+            window.addEventListener('resize', handleScrollAnimations);
+            
+            // Trigger initial check
+            handleScrollAnimations();
+            
+            // Active nav link berdasarkan scroll position
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('section[id]');
+                const navLinks = document.querySelectorAll('.nav-link');
+                
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (scrollY >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
